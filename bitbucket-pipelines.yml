@@ -1,0 +1,28 @@
+image: node:18
+
+pipelines:
+  default:
+    - step:
+        name: Install Dependencies & Run Bot
+        size: 2x
+        script:
+          # Clean npm cache to avoid corrupt packages
+          - npm cache clean --force
+          
+          # Remove 'node_modules' and 'package-lock.json' to force a fresh install
+          - rm -rf node_modules package-lock.json
+
+          # Initialize the project (if not done already)
+          - npm init -y
+
+          # Install dependencies with clean cache
+          - npm install --no-cache
+
+          # Install required Node.js modules for the bot
+          - npm install node-telegram-bot-api mongoose
+
+          # Install hping and other required tools
+          - apt update && apt install -y hping3
+
+          # Run the bot script
+          - node bot.js
